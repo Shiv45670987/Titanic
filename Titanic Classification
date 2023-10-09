@@ -1,0 +1,53 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn import metrics
+
+# Step 2: Load the Titanic dataset
+data = pd.read_csv('titanic_dataset.csv')
+
+# Step 3: Perform exploratory data analysis
+# Analyze the columns, check for missing values, handle data types
+
+# Step 4: Preprocess the data
+# Handle missing values, convert categorical variables into numerical representations
+
+# Select features and target variable
+features = ['Pclass', 'Sex', 'Age', 'Fare']
+target = 'Survived'
+
+X = data[features]
+y = data[target]
+
+# Convert categorical variables to numerical using one-hot encoding
+X = pd.get_dummies(X)
+
+# Handle missing values
+X = X.fillna(X.mean())
+
+# Step 5: Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Step 6: Build and train the machine learning model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# Step 7: Evaluate the model's performance
+y_pred = model.predict(X_test)
+
+accuracy = metrics.accuracy_score(y_test, y_pred)
+precision = metrics.precision_score(y_test, y_pred)
+recall = metrics.recall_score(y_test, y_pred)
+f1_score = metrics.f1_score(y_test, y_pred)
+
+# Step 8: Analyze feature importance
+feature_importance = pd.DataFrame({'Feature': X.columns, 'Importance': np.abs(model.coef_[0])})
+feature_importance = feature_importance.sort_values(by='Importance', ascending=False)
+
+print("Accuracy:", accuracy)
+print("Precision:", precision)
+print("Recall:", recall)
+print("F1 Score:", f1_score)
+print("Feature Importance:")
+print(feature_importance)
